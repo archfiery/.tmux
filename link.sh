@@ -1,22 +1,21 @@
 #!/bin/bash
 
-if [ -f ${HOME}/.tmux.conf ]; then
-  uuid=$(uuidgen -r)
-  backup_fn="${HOME}/.tmux_${uuid}_backup.conf"
-  mv "${HOME}/.tmux.conf" ${backup_fn}
-elif [ -L "${HOME}/.tmux.conf" ]; then
-  rm $HOME/.tmux.conf
-fi
+function link() {
+  fn=$1
 
-ln -s "$(pwd)/tmux.conf" "${HOME}/.tmux.conf"
+  if [ -L "${HOME}/.${fn}" ]; then
+    rm "$HOME/.${fn}"
+  elif [ -f "${HOME}/.${fn}" ]; then
+    uuid=$(uuidgen -r)
+    backup_fn="${HOME}/.${fn}_${uuid}.backup"
+    mv "${HOME}/.${fn}" ${backup_fn}
+  else
+    echo -n ""
+  fi
 
-if [ -f "${HOME}/.tmux.conf.local" ]; then
-  uuid=$(uuidgen -r)
-  backup_fn="${HOME}/.tmux_${uuid}_backup.conf.local"
-  mv "${HOME}/.tmux.conf.local" ${backup_fn}
-else
-  rm "${HOME}/.tmux.conf.local"
-fi
+  ln -f -s "$(pwd)/${fn}" "${HOME}/.${fn}"
+}
 
-ln -s "$(pwd)/tmux.conf.local" "${HOME}/.tmux.conf.local"
-
+echo "create new symbolic links"
+link "tmux.conf"
+link "tmux.conf.local"
