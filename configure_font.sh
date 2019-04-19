@@ -18,3 +18,10 @@ if [ ! -d ~/.config/fontconfig/conf.d/ ]; then
 fi
 
 mv 10-powerline-symbols.conf ~/.config/fontconfig/conf.d/
+
+
+# gee, it might not be useful
+
+git clone https://github.com/powerline/fonts.git
+
+./fonts/install.sh
